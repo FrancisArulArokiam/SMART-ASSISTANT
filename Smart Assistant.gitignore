@@ -1,0 +1,131 @@
+import speech_recognition as sr
+import datetime
+import wikipedia
+import webbrowser
+import os
+import sys
+from tkinter import *
+from tkinter.ttk import *
+from PIL import ImageTk, Image
+import tkinter as tk
+import pyglet
+import time
+ 
+ 
+# creates a Tk() object
+master = Tk()
+master.title("JARVIS at your service")
+ 
+# root window
+ 
+print("Initializing")
+engine = pyttsx3.init()
+  
+# speach function speaks the string which is passed
+ 
+ def start():
+    def speak(text):
+        engine.say(text)
+        engine.runAndWait()
+    def wish():
+        hour = int(datetime.datetime.now().hour)
+ 
+        if hour >= 0 and hour < 12:
+            speak("Good morning sir..., I'm Friday, your personal assistant...")
+            speak("How may i help you?")
+        elif hour >= 12 and hour < 17:
+            speak("Good afternoon sir..., I'm Friday, your personal assistant...")
+            speak("How may i help you?")
+        elif hour >= 17 and hour < 22:
+            speak("Good Evening sir..., I'm Friday, your personal assistant...")
+            speak("How may i help you?")
+        elif hour >= 22 and hour < 0:
+            speak("Sir it's night... ,have a good spleep...")
+            speak("any emergency sir?")
+ 
+    query = re.compile(r"[a-zA-Z0-9]")
+    wish()
+ 
+    def takeCommand():
+ 
+        r = sr.Recognizer()
+        r = sr.Recognizer()
+        my_mic_device = sr.Microphone(device_index=1)
+        try:
+            with my_mic_device as source:
+                print("listening...")
+                La1 = Label(master, text=speak("listeing..."))
+		r.adjust_for_ambient_noise(source)
+ 
+                audio = r.listen(source)
+ 
+            print("Recognizing...")
+            la2 = Label(master, text=speak("Recognizing..."))
+            la2.pack(pady=10)
+            query = r.recognize_google(audio)
+ 
+            print(f"user said: {query}\n")
+            La1 = Label(master, text=speak(query))
+ 
+            if 'Wikipedia' in query:
+                speak("Searching wikipedia...")
+                query = query.replace("Wikipedia", "")
+                results = wikipedia.summary(query, sentences=10)
+                print(results)
+                speak(results)
+ 
+            elif "open Google" in query:
+                print("R")
+                url = "google.com"
+                print("U")
+                chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
+                print("L")
+                webbrowser.get(chrome_path).open(url)
+            elif "open YouTube" in query:
+                url = "youtube.com"
+                chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
+                webbrowser.get(chrome_path).open(url)
+	    
+            elif "play music" in query:
+                song_dir = "D:\\songs"
+                songs = os.listdir(song_dir)
+                print(songs)
+                os.startfile(os.path.join(song_dir, songs[0]))
+ 
+            elif "time" in query:
+                strTime = datetime.datetime.now().strftime("%H:%M:%S")
+                print("The time is", strTime)
+                speak(f"the time is {strTime}")
+ 
+        except Exception as e:
+            speak("say that again please")
+            query = None
+    print("Your speech_recognition version is: "+sr._version_)
+    la = Label(master, text="listening")
+    la.pack(pady=10)
+    takeCommand()
+ 
+ 
+def a_w():
+ 
+    window = Toplevel()
+    canvas = Canvas(window, width=1600, height=768)
+    image3 = ImageTk.PhotoImage(Image.open('4.png'))
+    canvas.create_image(0, 0, anchor=NW, image=image3)
+ 
+    btn1 = Button(window, text="Click to speak", command=start)
+    btn1.pack()
+    canvas.pack()
+    window.mainloop()
+canvas = Canvas(width=1600, height=640, bg='black')
+image2 = ImageTk.PhotoImage(Image.open('fff.png'))
+canvas.create_image(0, 0, image=image2, anchor=NW)
+canvas.pack()
+btn2 = Button(text="Click to star your Assistant", command=a_w)
+btn2.pack()
+ 
+mainloop()
+
+
+
+
